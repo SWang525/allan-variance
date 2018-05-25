@@ -7,7 +7,7 @@ from scipy.optimize import nnls
 
 
 def allan_variance(x, dt=1, min_cluster_size=1, min_cluster_count='auto',
-                   n_clusters=100, input_type="increment"):
+                   n_clusters=100, input_type="increment", verbose=True):
     """Compute Allan variance (AVAR).
 
     Consider an underlying measurement y(t). Our sensors output integrals of
@@ -71,10 +71,21 @@ def allan_variance(x, dt=1, min_cluster_size=1, min_cluster_count='auto',
 
     x = np.asarray(x, dtype=float)
     n = x.shape[0]
+
     X = np.cumsum(x, axis=0)
 
     if min_cluster_count == 'auto':
         min_cluster_count = min(1000, n - 2)
+
+
+    if verbose:
+        print "Number of samples: %i" % n
+        print "Sampling time interval: %.6f" % dt
+        print "Minimum size of a cluster to use: %i" % min_cluster_size
+        print "Minimum number of clusters required to compute the average: %i" % min_cluster_count
+        print "Number of clusters to compute Allan variance for: %i" % n_clusters
+        print "Input type: %s" % input_type
+
 
     log_min = np.log2(min_cluster_size)
     log_max = np.log2((n - min_cluster_count) // 2)
